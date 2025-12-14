@@ -75,4 +75,24 @@
 
 ---
 
+## Session: 2024-12-14 (PM 規劃)
+
+### 變更摘要
+- 完成 IMPLEMENTATION-PLAN.md（7 Phase、37 項任務）
+- 建立 `/coder` subagent
+
+### 決策記錄
+- 使用單一 `/coder` 而非分 frontend/backend，因為 Next.js 全端整合
+- `/scenario` subagent 延後到 Phase 5 再建立
+- 關鍵路徑：Phase 1 → 2 → 3 → 5 → 6 → 7
+- Phase 4（AI 對話）可與 Phase 3 並行
+
+### 待辦事項
+- [ ] 執行 `/coder` 開始 Phase 1
+- [ ] Phase 1 完成後更新進度
+- [x] 撰寫 IMPLEMENTATION-PLAN.md
+- [x] 建立 `/coder` subagent
+
+---
+
 <!-- 新的 session 記錄請加在這裡 -->

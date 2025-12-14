@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\ndocs: 完成 PM 規劃與建立 /coder subagent\n\n- IMPLEMENTATION-PLAN.md: 7 Phase、37 項任務\n- /coder subagent: 全端開發者角色定義\n- 更新 SESSION-LOG.md\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n)\")"
+    ]
+  }
+}
