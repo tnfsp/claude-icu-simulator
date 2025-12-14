@@ -39,11 +39,12 @@ export function ChatArea() {
     });
 
     try {
-      // Call chat API
+      // Call chat API with streaming
       const response = await fetch("/api/chat", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
+          Accept: "text/event-stream",
         },
         body: JSON.stringify({
           message: userMessage,
@@ -57,13 +58,52 @@ export function ChatArea() {
         throw new Error("Failed to get response");
       }
 
-      const data = await response.json();
+      // Handle streaming response
+      const reader = response.body?.getReader();
+      if (!reader) {
+        throw new Error("No reader available");
+      }
 
-      // Add nurse response
+      const decoder = new TextDecoder();
+      let fullText = "";
+
+      // Add empty nurse message that we'll update
+      const messageId = crypto.randomUUID();
       addMessage({
         role: "nurse",
-        content: data.reply,
+        content: "",
       });
+
+      // Read stream
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value);
+        const lines = chunk.split("\n").filter((line) => line.startsWith("data: "));
+
+        for (const line of lines) {
+          const data = line.slice(6); // Remove "data: " prefix
+          if (data === "[DONE]") continue;
+
+          try {
+            const parsed = JSON.parse(data);
+            if (parsed.text) {
+              fullText += parsed.text;
+              // Update the last message with accumulated text
+              useGameStore.setState((state) => ({
+                messages: state.messages.map((msg, idx) =>
+                  idx === state.messages.length - 1
+                    ? { ...msg, content: fullText }
+                    : msg
+                ),
+              }));
+            }
+          } catch {
+            // Skip invalid JSON
+          }
+        }
+      }
     } catch (error) {
       console.error("Chat error:", error);
       addMessage({
