@@ -263,6 +263,56 @@
   - 關鍵資訊涵蓋: +10 分
   - 學長評價: +0~20 分
 
+#### 13. Airway/Breathing Management 🆕
+> 呼吸道處置與呼吸器管理
+
+- [ ] **SpO2 監測與警示**：
+  - SpO2 < 92% → 黃色警告
+  - SpO2 < 88% → 紅色警告 + 護理師主動提醒
+  - 提示學員調整氧氣設定或考慮插管
+
+- [ ] **氧氣治療選項**：
+  - Room Air
+  - Nasal Cannula (NC) - 1-6 L/min
+  - Simple Mask - 6-10 L/min
+  - Non-Rebreather Mask (NRM) - 10-15 L/min
+  - High-Flow NC (HFNC) - FiO2 21-100%, Flow 20-60 L/min
+  - BiPAP - IPAP/EPAP 設定
+
+- [ ] **插管決策與執行**：
+  - 插管適應症勾選確認
+  - RSI 藥物選擇：
+    - Sedation: Propofol / Ketamine / Etomidate
+    - Paralytic: Succinylcholine / Rocuronium
+  - 插管成功/失敗判定
+
+- [ ] **呼吸器設定（插管後）**：
+  - Mode: AC/VC, AC/PC, SIMV, PSV
+  - Tidal Volume: 6-8 mL/kg IBW
+  - Rate: 12-20 /min
+  - FiO2: 21-100%
+  - PEEP: 5-20 cmH2O
+  - I:E Ratio
+
+**氧氣治療效果：**
+| 裝置 | 預期 FiO2 | SpO2 改善 |
+|------|-----------|-----------|
+| NC 2L | ~28% | +3-5% |
+| NC 4L | ~36% | +5-8% |
+| Simple Mask 8L | ~50% | +8-12% |
+| NRM 15L | ~90% | +15-20% |
+| HFNC 60L/60% | ~60% | +10-15% |
+| 插管 + Vent | 可達 100% | 完全控制 |
+
+**RSI 藥物選項：**
+| 類別 | 藥物 | 劑量 | 特點 |
+|------|------|------|------|
+| Sedation | Propofol | 1.5-2.5 mg/kg | 快速，降血壓 |
+| Sedation | Ketamine | 1-2 mg/kg | 維持血壓，支氣管擴張 |
+| Sedation | Etomidate | 0.3 mg/kg | 血流動力學穩定 |
+| Paralytic | Succinylcholine | 1-1.5 mg/kg | 快速起效，短效 |
+| Paralytic | Rocuronium | 1.2 mg/kg | 較長效，可逆轉 |
+
 ---
 
 ### 次要功能（未來版本）
