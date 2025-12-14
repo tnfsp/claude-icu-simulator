@@ -164,4 +164,52 @@
 
 ---
 
+## Session: 2025-12-14 (Lab 介面改版 & Airway Management 規劃)
+
+### 變更摘要
+- 重新設計 Lab 開立介面（LabOrderModal.tsx）
+  - 從「整包選」改為「個別勾選」，更貼近真實臨床
+  - CBC、ABG 保留為 bundle（臨床合理）
+  - 新增 60+ 個別檢驗項目（7 大類別）
+  - 新增培養項目：Blood/Urine/Sputum/Wound Culture
+  - 培養項目有更長的結果延遲（5秒 vs 2秒）
+- 更新 LabResultsModal.tsx 支援培養結果
+  - 顯示「培養中...」狀態 badge
+  - 支援非數值（qualitative）結果
+- 安裝 shadcn/ui 新元件：badge, separator
+- 更新 PRD.md 至 v0.2（新增 Section 13）
+- 更新 IMPLEMENTATION-PLAN.md 新增 Phase 12
+
+### 決策記錄
+
+**Lab 開立介面改版：**
+| 項目 | 原設計 | 新設計 | 原因 |
+|------|--------|--------|------|
+| CBC | 整包 | 整包（保留） | 臨床上通常整組開 |
+| ABG | 整包 | 整包（保留） | 同上 |
+| 生化 | 整包 | 個別勾選 | 訓練學員依臨床情況選擇 |
+| 培養 | 無 | 新增 4 項 | 感染症診斷必備 |
+
+**Airway/Breathing Management 規劃：**
+| 功能 | 說明 | 教學價值 |
+|------|------|----------|
+| SpO2 警示 | <92% 黃警、<88% 紅警 + 護理師提醒 | 學習及早介入 |
+| 氧氣治療 | NC → Mask → NRM → HFNC → BiPAP | 熟悉各設備適用情境 |
+| 插管決策 | RSI 藥物選擇（Sedation + Paralytic） | 學習 RSI 流程與藥物 |
+| 呼吸器設定 | AC/VC, AC/PC, SIMV, PSV + 參數 | 熟悉呼吸器操作 |
+
+**任務數更新：**
+- 原 62 項任務 → 新增 9 項 → 總計 71 項
+- Phase 12 可與 Phase 9 (ACLS) 並行開發
+
+### 待辦事項
+- [ ] 完成 v1 剩餘工作（Phase 4-7）
+- [ ] 設定 Claude API Key
+- [ ] 準備 POCUS 素材
+- [ ] 開始 Phase 8: 動態病人系統
+- [ ] 開始 Phase 12: Airway/Breathing Management
+- [ ] 準備 ECG 波形素材（SVG/GIF）
+
+---
+
 <!-- 新的 session 記錄請加在這裡 -->
