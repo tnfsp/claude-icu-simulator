@@ -9,6 +9,8 @@ import type {
   ExaminedItem,
   POCUSExamined,
   ModalType,
+  SBARReport,
+  HandoffFeedback,
 } from "./types";
 
 interface GameStore {
@@ -32,6 +34,10 @@ interface GameStore {
   gameEnded: boolean;
   submittedDiagnosis: string | null;
 
+  // Handoff
+  handoffReport: SBARReport | null;
+  handoffFeedback: HandoffFeedback | null;
+
   // UI state
   activeModal: ModalType;
 
@@ -52,6 +58,10 @@ interface GameStore {
   endGame: (diagnosis: string) => void;
   resetGame: () => void;
 
+  // Handoff actions
+  setHandoffReport: (report: SBARReport) => void;
+  setHandoffFeedback: (feedback: HandoffFeedback) => void;
+
   setActiveModal: (modal: ModalType) => void;
 }
 
@@ -68,6 +78,8 @@ const initialState = {
   gameStarted: false,
   gameEnded: false,
   submittedDiagnosis: null,
+  handoffReport: null,
+  handoffFeedback: null,
   activeModal: null as ModalType,
 };
 
@@ -176,6 +188,10 @@ export const useGameStore = create<GameStore>((set, get) => ({
     }),
 
   resetGame: () => set(initialState),
+
+  setHandoffReport: (handoffReport) => set({ handoffReport }),
+
+  setHandoffFeedback: (handoffFeedback) => set({ handoffFeedback }),
 
   setActiveModal: (activeModal) => set({ activeModal }),
 }));

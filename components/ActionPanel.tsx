@@ -52,10 +52,10 @@ const actionButtons: ActionButton[] = [
     description: "Lab Results",
   },
   {
-    id: "diagnosis",
-    label: "提交診斷",
+    id: "handoff",
+    label: "交班報告",
     icon: FileCheck,
-    description: "Submit Diagnosis",
+    description: "Handoff Report",
   },
 ];
 
@@ -85,9 +85,9 @@ export function ActionPanel() {
             return (
               <Button
                 key={action.id}
-                variant={action.id === "diagnosis" ? "default" : "outline"}
+                variant={action.id === "handoff" ? "default" : "outline"}
                 className={`h-auto py-3 px-2 flex flex-col items-center gap-1 ${
-                  action.id === "diagnosis"
+                  action.id === "handoff"
                     ? "bg-green-600 hover:bg-green-700 text-white"
                     : ""
                 }`}

@@ -178,6 +178,26 @@ export interface ManagementAction {
 }
 
 // ============================================
+// Handoff Types
+// ============================================
+
+export interface SBARReport {
+  situation: string;
+  background: string;
+  assessment: string;
+  recommendation: string;
+}
+
+export interface HandoffFeedback {
+  overall: "excellent" | "good" | "needs_improvement";
+  score: number;
+  strengths: string[];
+  missedPoints: string[];
+  suggestions: string[];
+  seniorComment: string;
+}
+
+// ============================================
 // Game State Types
 // ============================================
 
@@ -239,6 +259,10 @@ export interface GameState {
   gameStarted: boolean;
   gameEnded: boolean;
   submittedDiagnosis: string | null;
+
+  // Handoff
+  handoffReport: SBARReport | null;
+  handoffFeedback: HandoffFeedback | null;
 }
 
 // ============================================
@@ -268,6 +292,21 @@ export interface ValidateMedicationResponse {
   suggestion?: string;
 }
 
+export interface EvaluateHandoffRequest {
+  sbar: SBARReport;
+  scenario: Scenario;
+  actions: {
+    orderedLabs: OrderedLab[];
+    orderedMedications: OrderedMedication[];
+    examinedItems: ExaminedItem[];
+    pocusExamined: POCUSExamined[];
+  };
+}
+
+export interface EvaluateHandoffResponse {
+  feedback: HandoffFeedback;
+}
+
 // ============================================
 // UI Types
 // ============================================
@@ -278,7 +317,7 @@ export type ModalType =
   | "lab-results"
   | "pocus"
   | "orders"
-  | "diagnosis"
+  | "handoff"
   | "debrief"
   | null;
 

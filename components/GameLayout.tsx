@@ -12,7 +12,7 @@ import {
   LabResultsModal,
   POCUSModal,
   OrdersModal,
-  DiagnosisModal,
+  HandoffModal,
   DebriefModal,
 } from "@/components/modals";
 import { useGameStore } from "@/lib/store";
@@ -218,7 +218,7 @@ export function GameLayout() {
       <LabResultsModal />
       <POCUSModal />
       <OrdersModal />
-      <DiagnosisModal />
+      <HandoffModal />
       <DebriefModal />
     </div>
   );
