@@ -5,7 +5,10 @@
       "Bash(git commit -m \"$(cat <<''EOF''\ndocs: 完成 PM 規劃與建立 /coder subagent\n\n- IMPLEMENTATION-PLAN.md: 7 Phase、37 項任務\n- /coder subagent: 全端開發者角色定義\n- 更新 SESSION-LOG.md\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n)\")",
       "Bash(git push)",
       "Bash(npm run build:*)",
-      "Bash(npx shadcn@latest add:*)"
+      "Bash(npx shadcn@latest add:*)",
+      "Bash(git commit -m \"$(cat <<''EOF''\nfeat: 更新 Lab 開立介面 + 新增 Airway Management 規劃\n\n## Lab 開立功能改進\n- 改為個別檢驗項目勾選（更貼近真實臨床）\n- CBC 和 ABG 保留為套組\n- 新增檢驗項目：\n  - Cultures: Blood/Urine/Sputum/Wound culture\n  - Urinalysis: U/A routine, sediment, osmolality\n  - 更多生化項目：Cl, Ca, Mg, T-Bil, D-Bil, Albumin 等\n- 培養檢驗顯示「培養中...」狀態\n\n## PRD v0.2 更新\n- 新增 Section 13: Airway/Breathing Management\n  - SpO2 監測與警示系統\n  - 氧氣治療選項 (NC, Mask, NRM, HFNC, BiPAP)\n  - 插管決策與 RSI 藥物選擇\n  - 呼吸器設定 (Mode, TV, Rate, FiO2, PEEP)\n\n## IMPLEMENTATION-PLAN 更新\n- 新增 Phase 12: Airway/Breathing Management (9 項任務)\n- 總任務數: 62 → 71 項\n\n🤖 Generated with [Claude Code](https://claude.com/claude-code)\n\nCo-Authored-By: Claude Opus 4.5 <noreply@anthropic.com>\nEOF\n)\")",
+      "Bash(git commit:*)",
+      "Bash(npm run dev:*)"
     ]
   }
 }

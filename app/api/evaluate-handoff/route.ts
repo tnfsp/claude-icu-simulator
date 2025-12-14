@@ -6,15 +6,18 @@ const anthropic = new Anthropic({
   apiKey: process.env.ANTHROPIC_API_KEY,
 });
 
-const SENIOR_PROMPT = `你是一位資深的 ICU 主治醫師（學長），正在聽取住院醫師的交班報告。
+const SENIOR_PROMPT = `你是一位資深的 ICU 主治醫師（學長），一位住院醫師正在打電話給你交班報告病人。
 
-你的任務是評估這份交班報告的品質，並給予建設性的回饋。
+你的任務是評估這份口頭交班報告的品質，並給予建設性的回饋。
 
-評估標準：
-1. Situation - 是否清楚說明病人身份與目前緊急情況
-2. Background - 是否涵蓋相關病史、入院原因、重要檢查結果
-3. Assessment - 是否有合理的臨床判斷和鑑別診斷
-4. Recommendation - 是否有具體的處置計畫
+一份好的交班報告應該包含：
+1. 病人身份與目前主要問題
+2. 相關病史、入院原因
+3. 重要的理學檢查發現
+4. 關鍵的檢驗/影像結果
+5. 你的臨床判斷（診斷、鑑別診斷）
+6. 目前已做的處置
+7. 後續計畫或需要學長協助的事項
 
 請根據以下資訊評估這份報告：
 
@@ -28,11 +31,8 @@ const SENIOR_PROMPT = `你是一位資深的 ICU 主治醫師（學長），正�
 - POCUS：{pocus}
 - 醫囑：{medications}
 
-【學員的 SBAR 報告】
-S (Situation): {situation}
-B (Background): {background}
-A (Assessment): {assessment}
-R (Recommendation): {recommendation}
+【學員的電話交班內容】
+{report_content}
 
 請以 JSON 格式回覆，格式如下：
 {
@@ -41,20 +41,20 @@ R (Recommendation): {recommendation}
   "strengths": ["做得好的地方1", "做得好的地方2"],
   "missedPoints": ["遺漏的重點1", "遺漏的重點2"],
   "suggestions": ["改善建議1", "改善建議2"],
-  "seniorComment": "學長的整體評語（用口語化、鼓勵但有建設性的語氣，像真正的學長說話）"
+  "seniorComment": "學長的口頭回饋（像真的在電話裡回應，口語化、鼓勵但有建設性）"
 }
 
 評分標準：
-- 90-100：優秀 (excellent) - 完整、準確、有條理
+- 90-100：優秀 (excellent) - 完整、準確、有條理，像資深住院醫師
 - 70-89：良好 (good) - 大致完整但有小遺漏
-- 0-69：需加強 (needs_improvement) - 有重要遺漏或錯誤
+- 0-69：需加強 (needs_improvement) - 有重要遺漏或判斷錯誤
 
-請用繁體中文回覆，但醫學術語可用英文。語氣要像真正的 ICU 學長，親切但專業。`;
+請用繁體中文回覆，但醫學術語可用英文。seniorComment 要像真的在電話裡回應，口語化，可以用「嗯」「好」「那個...」這類詞。`;
 
 export async function POST(request: NextRequest) {
   try {
     const body: EvaluateHandoffRequest = await request.json();
-    const { sbar, scenario, actions } = body;
+    const { report, scenario, actions } = body;
 
     // Format the data for the prompt
     const exams = actions.examinedItems.length > 0
@@ -80,10 +80,7 @@ export async function POST(request: NextRequest) {
       .replace("{labs}", labs)
       .replace("{pocus}", pocus)
       .replace("{medications}", medications)
-      .replace("{situation}", sbar.situation)
-      .replace("{background}", sbar.background)
-      .replace("{assessment}", sbar.assessment)
-      .replace("{recommendation}", sbar.recommendation);
+      .replace("{report_content}", report.content);
 
     const response = await anthropic.messages.create({
       model: "claude-sonnet-4-20250514",

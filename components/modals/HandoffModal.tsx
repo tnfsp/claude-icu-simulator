@@ -11,19 +11,18 @@ import {
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
-import { Label } from "@/components/ui/label";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useGameStore } from "@/lib/store";
 import {
-  ClipboardCheck,
+  Phone,
   Loader2,
   CheckCircle,
   AlertTriangle,
   XCircle,
   MessageSquare,
 } from "lucide-react";
-import type { SBARReport, HandoffFeedback } from "@/lib/types";
+import type { HandoffFeedback } from "@/lib/types";
 
 export function HandoffModal() {
   const activeModal = useGameStore((state) => state.activeModal);
@@ -37,43 +36,29 @@ export function HandoffModal() {
   const setHandoffFeedback = useGameStore((state) => state.setHandoffFeedback);
   const endGame = useGameStore((state) => state.endGame);
 
-  const [sbar, setSbar] = useState<SBARReport>({
-    situation: "",
-    background: "",
-    assessment: "",
-    recommendation: "",
-  });
+  const [reportContent, setReportContent] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [feedback, setFeedback] = useState<HandoffFeedback | null>(null);
   const [showFeedback, setShowFeedback] = useState(false);
 
   const isOpen = activeModal === "handoff";
 
-  const handleChange = (field: keyof SBARReport, value: string) => {
-    setSbar((prev) => ({ ...prev, [field]: value }));
-  };
-
   const isFormValid = () => {
-    return (
-      sbar.situation.trim().length >= 10 &&
-      sbar.background.trim().length >= 10 &&
-      sbar.assessment.trim().length >= 10 &&
-      sbar.recommendation.trim().length >= 10
-    );
+    return reportContent.trim().length >= 30;
   };
 
   const handleSubmit = async () => {
     if (!isFormValid() || !scenario) return;
 
     setIsLoading(true);
-    setHandoffReport(sbar);
+    setHandoffReport({ content: reportContent });
 
     try {
       const response = await fetch("/api/evaluate-handoff", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
-          sbar,
+          report: { content: reportContent },
           scenario,
           actions: {
             orderedLabs,
@@ -94,7 +79,6 @@ export function HandoffModal() {
       setShowFeedback(true);
     } catch (error) {
       console.error("Handoff evaluation error:", error);
-      // Show a default feedback on error
       const defaultFeedback: HandoffFeedback = {
         overall: "good",
         score: 70,
@@ -117,7 +101,7 @@ export function HandoffModal() {
 
   const handleClose = () => {
     if (!showFeedback) {
-      setSbar({ situation: "", background: "", assessment: "", recommendation: "" });
+      setReportContent("");
     }
     setActiveModal(null);
   };
@@ -160,88 +144,34 @@ export function HandoffModal() {
       <DialogContent className="max-w-2xl max-h-[90vh] overflow-y-auto">
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">
-            <ClipboardCheck className="h-5 w-5" />
-            交班報告
+            <Phone className="h-5 w-5" />
+            電話交班
           </DialogTitle>
           <DialogDescription>
-            使用 SBAR 格式向學長報告這位病人的狀況
+            假設你現在打電話給學長，請口頭報告這位病人的狀況
           </DialogDescription>
         </DialogHeader>
 
         {!showFeedback ? (
           <>
-            <div className="space-y-4 py-4">
-              {/* Situation */}
-              <div className="space-y-2">
-                <Label htmlFor="situation" className="flex items-center gap-2">
-                  <Badge variant="outline" className="bg-blue-50 dark:bg-blue-950">S</Badge>
-                  Situation（情況）
-                </Label>
-                <Textarea
-                  id="situation"
-                  placeholder="我是 XXX，我要向您報告 XX 床的病人，目前的情況是..."
-                  value={sbar.situation}
-                  onChange={(e) => handleChange("situation", e.target.value)}
-                  className="min-h-[80px]"
-                />
-                <p className="text-xs text-muted-foreground">
-                  簡述：你是誰、病人是誰、現在發生什麼事
-                </p>
+            <div className="py-4">
+              {/* Phone call simulation hint */}
+              <div className="mb-4 p-3 bg-muted/50 rounded-lg text-sm text-muted-foreground">
+                <p className="font-medium mb-1">📞 學長接起電話了...</p>
+                <p>「喂，我是 ICU VS，你說。」</p>
               </div>
 
-              {/* Background */}
-              <div className="space-y-2">
-                <Label htmlFor="background" className="flex items-center gap-2">
-                  <Badge variant="outline" className="bg-green-50 dark:bg-green-950">B</Badge>
-                  Background（背景）
-                </Label>
-                <Textarea
-                  id="background"
-                  placeholder="病人的病史、入院原因、相關檢查結果..."
-                  value={sbar.background}
-                  onChange={(e) => handleChange("background", e.target.value)}
-                  className="min-h-[80px]"
-                />
-                <p className="text-xs text-muted-foreground">
-                  相關病史、入院原因、重要檢查結果
-                </p>
-              </div>
+              {/* Single textarea for free-form handoff */}
+              <Textarea
+                placeholder="學長好，我是值班 R1，我要向您報告 15 床的病人..."
+                value={reportContent}
+                onChange={(e) => setReportContent(e.target.value)}
+                className="min-h-[250px] text-base leading-relaxed"
+              />
 
-              {/* Assessment */}
-              <div className="space-y-2">
-                <Label htmlFor="assessment" className="flex items-center gap-2">
-                  <Badge variant="outline" className="bg-orange-50 dark:bg-orange-950">A</Badge>
-                  Assessment（評估）
-                </Label>
-                <Textarea
-                  id="assessment"
-                  placeholder="我的評估是... 鑑別診斷包括..."
-                  value={sbar.assessment}
-                  onChange={(e) => handleChange("assessment", e.target.value)}
-                  className="min-h-[80px]"
-                />
-                <p className="text-xs text-muted-foreground">
-                  你的臨床判斷、可能的診斷
-                </p>
-              </div>
-
-              {/* Recommendation */}
-              <div className="space-y-2">
-                <Label htmlFor="recommendation" className="flex items-center gap-2">
-                  <Badge variant="outline" className="bg-purple-50 dark:bg-purple-950">R</Badge>
-                  Recommendation（建議）
-                </Label>
-                <Textarea
-                  id="recommendation"
-                  placeholder="我建議... 目前已經做了... 接下來計畫..."
-                  value={sbar.recommendation}
-                  onChange={(e) => handleChange("recommendation", e.target.value)}
-                  className="min-h-[80px]"
-                />
-                <p className="text-xs text-muted-foreground">
-                  你的處置計畫、需要學長協助的事項
-                </p>
-              </div>
+              <p className="text-xs text-muted-foreground mt-2">
+                像真的打電話一樣，完整報告病人情況、你的判斷、以及處置計畫
+              </p>
             </div>
 
             <DialogFooter>
@@ -255,7 +185,7 @@ export function HandoffModal() {
                     學長評估中...
                   </>
                 ) : (
-                  "提交報告"
+                  "報告完畢"
                 )}
               </Button>
             </DialogFooter>
@@ -292,7 +222,7 @@ export function HandoffModal() {
                       <div className="font-medium text-blue-800 dark:text-blue-200 mb-1">
                         學長回饋
                       </div>
-                      <p className="text-sm text-blue-700 dark:text-blue-300">
+                      <p className="text-sm text-blue-700 dark:text-blue-300 whitespace-pre-wrap">
                         {feedback.seniorComment}
                       </p>
                     </div>

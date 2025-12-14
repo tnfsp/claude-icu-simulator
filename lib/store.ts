@@ -9,7 +9,7 @@ import type {
   ExaminedItem,
   POCUSExamined,
   ModalType,
-  SBARReport,
+  HandoffReport,
   HandoffFeedback,
 } from "./types";
 
@@ -35,7 +35,7 @@ interface GameStore {
   submittedDiagnosis: string | null;
 
   // Handoff
-  handoffReport: SBARReport | null;
+  handoffReport: HandoffReport | null;
   handoffFeedback: HandoffFeedback | null;
 
   // UI state
@@ -59,7 +59,7 @@ interface GameStore {
   resetGame: () => void;
 
   // Handoff actions
-  setHandoffReport: (report: SBARReport) => void;
+  setHandoffReport: (report: HandoffReport) => void;
   setHandoffFeedback: (feedback: HandoffFeedback) => void;
 
   setActiveModal: (modal: ModalType) => void;

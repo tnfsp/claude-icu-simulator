@@ -181,11 +181,8 @@ export interface ManagementAction {
 // Handoff Types
 // ============================================
 
-export interface SBARReport {
-  situation: string;
-  background: string;
-  assessment: string;
-  recommendation: string;
+export interface HandoffReport {
+  content: string;
 }
 
 export interface HandoffFeedback {
@@ -261,7 +258,7 @@ export interface GameState {
   submittedDiagnosis: string | null;
 
   // Handoff
-  handoffReport: SBARReport | null;
+  handoffReport: HandoffReport | null;
   handoffFeedback: HandoffFeedback | null;
 }
 
@@ -293,7 +290,7 @@ export interface ValidateMedicationResponse {
 }
 
 export interface EvaluateHandoffRequest {
-  sbar: SBARReport;
+  report: HandoffReport;
   scenario: Scenario;
   actions: {
     orderedLabs: OrderedLab[];
