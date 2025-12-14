@@ -1,12 +1,18 @@
-# Project: [PROJECT_NAME]
+# Project: ICU Simulator
 
-> 這是專案模板框架。開始新專案時，請將 `[PROJECT_NAME]` 替換為實際專案名稱。
+> ICU 模擬病人教學系統 - 給 Junior R 和 Clerk 練習臨床推理的互動式學習工具
 
 ## 專案概述
 
-此專案使用 Claude Code 的 Subagent 架構進行開發。主要透過兩個核心 subagent 協作：
-- **Concept** (`/concept`): 專案概念設計師，負責需求分析與架構設計
-- **Project Manager** (`/pm`): 專案經理，負責規劃執行與協調
+**ICU Simulator** 是一個醫學教育工具，模擬 ICU 病人惡化情境，讓學員練習：
+- 鑑別診斷（如 Cardiogenic shock vs Septic shock）
+- 開立檢驗、理學檢查、床邊超音波
+- 醫囑開立與劑量判斷
+
+此專案使用 Claude Code 的 Subagent 架構進行開發：
+- **Concept** (`/concept`): 概念設計師，負責需求分析與架構設計（不寫 code）
+- **PM** (`/pm`): 專案經理，負責規劃任務與協調 subagent（不寫 code）
+- **開發 Subagents**: 由 PM 建立，負責實際開發工作
 
 ---
 

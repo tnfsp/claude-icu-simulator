@@ -29,18 +29,50 @@
 
 ---
 
-<!-- 新的 session 記錄請加在這裡，格式如下：
-
-## Session: YYYY-MM-DD HH:MM
+## Session: 2024-12-14 (Concept 討論)
 
 ### 變更摘要
-- 完成了什麼
+- 完成 PRD v0.1 撰寫
+- 完成 TECHSTACK v0.1 撰寫
+- 更新 CLAUDE.md 專案名稱為 ICU Simulator
+- 定義首個情境：Cardiogenic shock mimicking septic shock
 
 ### 決策記錄
-- 決定了什麼，為什麼
+
+**專案核心決策：**
+| 項目 | 決定 | 原因 |
+|------|------|------|
+| 互動方式 | 混合式（對話 + 選單） | 對話更貼近臨床，選單降低操作門檻 |
+| 問病史 | 純 AI 生成（Claude API） | 自然、彈性，訓練學員問對問題 |
+| Vital Signs | MVP 靜態，架構預留動態 | 降低初期複雜度 |
+| 語言 | 介面中文，醫學術語英文 | 符合台灣臨床習慣 |
+| 報告格式 | 台灣醫院常見格式 | 貼近實務 |
+| 醫囑 | 具體藥物 + 劑量 + 頻次 | 訓練完整處方能力 |
+| 劑量驗證 | 要，警告不合理劑量 | 教育意義 |
+| POCUS | 用戶提供圖片/影片素材 | 真實感 |
+| 部署 | Vercel，先 local 開發 | 簡單、免費 |
+| 登入 | MVP 不需要 | 簡化 |
+
+**技術棧決策：**
+- Next.js 14+ (App Router) - 全端整合
+- Tailwind CSS + shadcn/ui - 快速開發
+- Zustand - 輕量狀態管理
+- Claude API - 對話生成
+
+**Subagent 分工澄清：**
+- `/concept` 和 `/pm` 不寫 code
+- 寫 code 的是 `/frontend`、`/backend`、`/scenario` 等開發用 subagent
+- PM 負責建立和協調這些開發 subagent
 
 ### 待辦事項
-- [ ] 下次要做的事
-- [x] 已完成的事（保留追蹤）
+- [ ] 執行 `/pm` 建立實作計畫
+- [ ] PM 建立開發用 subagent（/frontend, /backend, /scenario）
+- [ ] 開始開發 MVP
+- [ ] 準備 POCUS 素材（echo 影片、圖片）
+- [x] 撰寫 PRD.md
+- [x] 撰寫 TECHSTACK.md
+- [x] 更新 CLAUDE.md
 
--->
+---
+
+<!-- 新的 session 記錄請加在這裡 -->
