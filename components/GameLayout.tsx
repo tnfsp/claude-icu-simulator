@@ -6,6 +6,15 @@ import { VitalSignsPanel } from "@/components/VitalSignsPanel";
 import { StatusPanel } from "@/components/StatusPanel";
 import { ChatArea } from "@/components/ChatArea";
 import { ActionPanel } from "@/components/ActionPanel";
+import {
+  PhysicalExamModal,
+  LabOrderModal,
+  LabResultsModal,
+  POCUSModal,
+  OrdersModal,
+  DiagnosisModal,
+  DebriefModal,
+} from "@/components/modals";
 import { useGameStore } from "@/lib/store";
 import { Play, RotateCcw, Loader2 } from "lucide-react";
 import type { Scenario } from "@/lib/types";
@@ -202,6 +211,15 @@ export function GameLayout() {
           </>
         )}
       </main>
+
+      {/* Modals */}
+      <PhysicalExamModal />
+      <LabOrderModal />
+      <LabResultsModal />
+      <POCUSModal />
+      <OrdersModal />
+      <DiagnosisModal />
+      <DebriefModal />
     </div>
   );
 }
