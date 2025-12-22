@@ -20,6 +20,8 @@ import {
   TestTube,
   Monitor,
   Pill,
+  Clock,
+  MessageCircle,
 } from "lucide-react";
 
 const diagnosisLabels: Record<string, string> = {
@@ -40,6 +42,8 @@ export function DebriefModal() {
   const pocusExamined = useGameStore((state) => state.pocusExamined);
   const orderedLabs = useGameStore((state) => state.orderedLabs);
   const orderedMedications = useGameStore((state) => state.orderedMedications);
+  const playerActions = useGameStore((state) => state.playerActions);
+  const handoffFeedback = useGameStore((state) => state.handoffFeedback);
   const resetGame = useGameStore((state) => state.resetGame);
 
   const isOpen = activeModal === "debrief";
@@ -320,6 +324,57 @@ export function DebriefModal() {
                 </div>
               </CardContent>
             </Card>
+
+            {/* Handoff Score */}
+            {handoffFeedback && (
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <MessageCircle className="h-5 w-5" />
+                    交班報告評分
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="flex items-center justify-between">
+                    <span className="text-muted-foreground">學長評價</span>
+                    <span className="text-2xl font-bold">{handoffFeedback.score}<span className="text-sm text-muted-foreground">/100</span></span>
+                  </div>
+                </CardContent>
+              </Card>
+            )}
+
+            {/* Action Timeline */}
+            {playerActions.length > 0 && (
+              <Card>
+                <CardHeader className="pb-2">
+                  <CardTitle className="text-base flex items-center gap-2">
+                    <Clock className="h-5 w-5" />
+                    操作歷程
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <div className="space-y-2 max-h-40 overflow-y-auto">
+                    {playerActions
+                      .filter((a) => a.type !== "game_start" && a.type !== "game_end")
+                      .map((action, i) => (
+                        <div
+                          key={action.id}
+                          className="flex items-start gap-2 text-sm"
+                        >
+                          <span className="text-muted-foreground min-w-[50px]">
+                            {new Date(action.timestamp).toLocaleTimeString("zh-TW", {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                              second: "2-digit",
+                            })}
+                          </span>
+                          <span>{action.detail}</span>
+                        </div>
+                      ))}
+                  </div>
+                </CardContent>
+              </Card>
+            )}
 
             {/* Learning Points */}
             <Card className="border-blue-200 dark:border-blue-800">

@@ -34,6 +34,7 @@ export function HandoffModal() {
   const pocusExamined = useGameStore((state) => state.pocusExamined);
   const setHandoffReport = useGameStore((state) => state.setHandoffReport);
   const setHandoffFeedback = useGameStore((state) => state.setHandoffFeedback);
+  const addPlayerAction = useGameStore((state) => state.addPlayerAction);
   const endGame = useGameStore((state) => state.endGame);
 
   const [reportContent, setReportContent] = useState("");
@@ -77,6 +78,13 @@ export function HandoffModal() {
       setFeedback(data.feedback);
       setHandoffFeedback(data.feedback);
       setShowFeedback(true);
+
+      // Track player action
+      addPlayerAction("handoff", `交班報告 (評分: ${data.feedback.score})`, {
+        content: reportContent,
+        score: data.feedback.score,
+        overall: data.feedback.overall,
+      });
     } catch (error) {
       console.error("Handoff evaluation error:", error);
       const defaultFeedback: HandoffFeedback = {

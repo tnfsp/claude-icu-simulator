@@ -11,6 +11,7 @@ import { MessageCircle, Send, User, Stethoscope } from "lucide-react";
 export function ChatArea() {
   const messages = useGameStore((state) => state.messages);
   const addMessage = useGameStore((state) => state.addMessage);
+  const addPlayerAction = useGameStore((state) => state.addPlayerAction);
   const gameStarted = useGameStore((state) => state.gameStarted);
   const scenario = useGameStore((state) => state.scenario);
 
@@ -36,6 +37,11 @@ export function ChatArea() {
     addMessage({
       role: "user",
       content: userMessage,
+    });
+
+    // Track player action
+    addPlayerAction("chat", `詢問: ${userMessage.slice(0, 50)}${userMessage.length > 50 ? "..." : ""}`, {
+      message: userMessage,
     });
 
     try {

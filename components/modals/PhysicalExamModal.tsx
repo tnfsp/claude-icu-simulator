@@ -76,6 +76,7 @@ export function PhysicalExamModal() {
   const examinedItems = useGameStore((state) => state.examinedItems);
   const addExaminedItem = useGameStore((state) => state.addExaminedItem);
   const addMessage = useGameStore((state) => state.addMessage);
+  const addPlayerAction = useGameStore((state) => state.addPlayerAction);
 
   const isOpen = activeModal === "physical-exam";
 
@@ -106,6 +107,13 @@ export function PhysicalExamModal() {
 
     // Add to examined items
     addExaminedItem({
+      category: item.category,
+      item: item.id,
+      result,
+    });
+
+    // Track player action
+    addPlayerAction("physical_exam", `檢查: ${item.label}`, {
       category: item.category,
       item: item.id,
       result,

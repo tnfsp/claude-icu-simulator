@@ -258,4 +258,77 @@
 
 ---
 
+## Session: 2025-12-22 (Phase 5 完成)
+
+### 變更摘要
+- **Phase 5 完成**：情境系統開發
+  - 5.1 建立首個情境 JSON（`scenarios/cardiogenic-shock-01/scenario.json`）
+  - 5.2 建立 `/api/scenario` API Route（支援 GET 載入、POST 列表）
+  - 5.3 情境載入與初始化邏輯（GameLayout 從 API 載入）
+  - 5.6 操作追蹤系統（記錄所有學員操作）
+
+### 新增/修改檔案
+```
+新增:
+├── scenarios/cardiogenic-shock-01/scenario.json  # 完整情境資料（含 v2 擴充欄位）
+├── app/api/scenario/route.ts                      # Scenario API
+
+修改:
+├── lib/types.ts          # 新增 VitalTransition, DeteriorationThresholds, HandoffEvaluation, PlayerAction 類型
+├── lib/store.ts          # 新增 playerActions, addPlayerAction, loadError, setLoadError
+├── components/GameLayout.tsx           # 改為從 API 載入情境
+├── components/ChatArea.tsx             # 添加操作追蹤
+├── components/modals/PhysicalExamModal.tsx  # 添加操作追蹤
+├── components/modals/LabOrderModal.tsx      # 添加操作追蹤
+├── components/modals/POCUSModal.tsx         # 添加操作追蹤
+├── components/modals/OrdersModal.tsx        # 添加操作追蹤
+├── components/modals/HandoffModal.tsx       # 添加操作追蹤
+```
+
+### 技術決策
+- 情境 JSON 放在 `scenarios/[id]/scenario.json` 目錄結構
+- API Route 使用 fs.readFile 讀取 JSON（Serverless 相容）
+- 操作追蹤記錄：type, timestamp, detail, data
+- 追蹤類型：chat, physical_exam, lab_order, lab_view, pocus, medication, handoff, game_start, game_end
+
+### 目前進度
+- **v1 完成度**: ~85%（Phase 1-5 ✅, Phase 6-7 待完成）
+- **總任務數**: 71 項（v1: 37 項, v2: 34 項）
+
+### 待辦事項
+- [ ] Phase 6: 整合測試
+- [ ] Phase 7: Vercel 部署
+- [ ] 準備 POCUS 素材（echo 影片、圖片）
+- [ ] 準備 ECG 波形素材（SVG/GIF）
+- [ ] Phase 8+: v2 功能開發
+
+---
+
+## Session: 2025-12-22 (Phase 6 完成)
+
+### 變更摘要
+- **Phase 6 完成**：整合測試與 UI 優化
+  - 6.1 完整流程走通測試（Build 成功）
+  - 6.2 UI/UX 優化（DebriefModal 添加操作歷程、交班評分）
+  - 6.3 響應式設計調整（手機/平板適配）
+  - 6.4 錯誤處理與 loading 狀態
+
+### 修改檔案
+```
+components/GameLayout.tsx           # 響應式 Header、Layout 調整
+components/ActionPanel.tsx          # 響應式按鈕、報告通知 badge
+components/modals/DebriefModal.tsx  # 添加操作歷程時間軸、交班評分顯示
+```
+
+### 目前進度
+- **v1 完成度**: ~95%（Phase 1-6 ✅, Phase 7 待完成）
+- **總任務數**: 71 項（v1: 37 項, v2: 34 項）
+
+### 待辦事項
+- [ ] Phase 7: Vercel 部署
+- [ ] 準備 POCUS 素材
+- [ ] Phase 8+: v2 功能（動態 Vital Signs 等）
+
+---
+
 <!-- 新的 session 記錄請加在這裡 -->

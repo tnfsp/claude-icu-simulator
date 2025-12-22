@@ -19,6 +19,43 @@ export interface Scenario {
   diagnosis: Diagnosis;
   optimal_management: OptimalManagement;
   learning_points: string[];
+  // v2 extensions
+  vital_transitions?: VitalTransition[];
+  deterioration_thresholds?: DeteriorationThresholds;
+  handoff_evaluation?: HandoffEvaluation;
+}
+
+// v2: Vital transitions for dynamic patient state
+export interface VitalTransition {
+  trigger: {
+    medication?: string;
+    volume_gt?: number;
+  };
+  delay_seconds: number;
+  effect: {
+    hr_delta?: number;
+    bp_systolic_delta?: number;
+    bp_diastolic_delta?: number;
+    rr_delta?: number;
+    spo2_delta?: number;
+  };
+  nurse_message: string;
+}
+
+// v2: Thresholds for triggering ACLS
+export interface DeteriorationThresholds {
+  trigger_acls: {
+    hr_lt?: number;
+    hr_gt?: number;
+    bp_systolic_lt?: number;
+    spo2_lt?: number;
+  };
+}
+
+// v2: Handoff evaluation criteria
+export interface HandoffEvaluation {
+  required_mentions: string[];
+  critical_errors: string[];
 }
 
 export interface Opening {
@@ -236,6 +273,29 @@ export interface POCUSExamined {
   examinedAt: Date;
 }
 
+// ============================================
+// Player Action Tracking Types
+// ============================================
+
+export type PlayerActionType =
+  | "chat"           // 對話詢問
+  | "physical_exam"  // 理學檢查
+  | "lab_order"      // 開立檢驗
+  | "lab_view"       // 查看報告
+  | "pocus"          // 床邊超音波
+  | "medication"     // 開立醫囑
+  | "handoff"        // 交班報告
+  | "game_start"     // 遊戲開始
+  | "game_end";      // 遊戲結束
+
+export interface PlayerAction {
+  id: string;
+  type: PlayerActionType;
+  timestamp: Date;
+  detail: string;
+  data?: Record<string, unknown>;
+}
+
 export interface GameState {
   // Scenario
   scenario: Scenario | null;
@@ -251,6 +311,9 @@ export interface GameState {
   orderedMedications: OrderedMedication[];
   examinedItems: ExaminedItem[];
   pocusExamined: POCUSExamined[];
+
+  // Player action tracking
+  playerActions: PlayerAction[];
 
   // Game progress
   gameStarted: boolean;

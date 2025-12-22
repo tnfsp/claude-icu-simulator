@@ -66,6 +66,7 @@ export function ActionPanel() {
   const orderedLabs = useGameStore((state) => state.orderedLabs);
 
   const hasLabResults = orderedLabs.some((lab) => lab.resultsAvailable);
+  const pendingLabs = orderedLabs.filter((lab) => !lab.resultsAvailable).length;
 
   const handleAction = (actionId: ModalType) => {
     if (!gameStarted || gameEnded) return;
@@ -74,7 +75,7 @@ export function ActionPanel() {
 
   return (
     <Card className="w-full">
-      <CardContent className="p-4">
+      <CardContent className="p-3 md:p-4">
         <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
           {actionButtons.map((action) => {
             const isDisabled =
@@ -82,11 +83,14 @@ export function ActionPanel() {
               gameEnded ||
               (action.id === "lab-results" && !hasLabResults);
 
+            const showBadge =
+              action.id === "lab-results" && hasLabResults;
+
             return (
               <Button
                 key={action.id}
                 variant={action.id === "handoff" ? "default" : "outline"}
-                className={`h-auto py-3 px-2 flex flex-col items-center gap-1 ${
+                className={`h-auto py-2 md:py-3 px-1 md:px-2 flex flex-col items-center gap-1 relative ${
                   action.id === "handoff"
                     ? "bg-green-600 hover:bg-green-700 text-white"
                     : ""
@@ -94,8 +98,13 @@ export function ActionPanel() {
                 onClick={() => handleAction(action.id)}
                 disabled={isDisabled}
               >
-                <action.icon className="h-5 w-5" />
-                <span className="text-xs font-medium">{action.label}</span>
+                <action.icon className="h-4 w-4 md:h-5 md:w-5" />
+                <span className="text-[10px] md:text-xs font-medium">{action.label}</span>
+                {showBadge && (
+                  <span className="absolute -top-1 -right-1 h-4 w-4 bg-blue-500 text-white text-[10px] rounded-full flex items-center justify-center">
+                    !
+                  </span>
+                )}
               </Button>
             );
           })}

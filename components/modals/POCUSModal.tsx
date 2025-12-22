@@ -59,6 +59,7 @@ export function POCUSModal() {
   const pocusExamined = useGameStore((state) => state.pocusExamined);
   const addPOCUSExamined = useGameStore((state) => state.addPOCUSExamined);
   const addMessage = useGameStore((state) => state.addMessage);
+  const addPlayerAction = useGameStore((state) => state.addPlayerAction);
 
   const isOpen = activeModal === "pocus";
 
@@ -83,6 +84,13 @@ export function POCUSModal() {
     });
 
     const viewInfo = pocusViews.find((v) => v.id === viewId);
+
+    // Track player action
+    addPlayerAction("pocus", `POCUS: ${viewInfo?.label || viewId}`, {
+      view: viewId,
+      finding: finding.finding,
+    });
+
     addMessage({
       role: "system",
       content: `【POCUS - ${viewInfo?.label || viewId}】\n${finding.finding}`,

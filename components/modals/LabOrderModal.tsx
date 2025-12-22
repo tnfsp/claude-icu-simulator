@@ -135,6 +135,7 @@ export function LabOrderModal() {
     (state) => state.setLabResultsAvailable
   );
   const addMessage = useGameStore((state) => state.addMessage);
+  const addPlayerAction = useGameStore((state) => state.addPlayerAction);
 
   // Selected bundles (e.g., "cbc", "abg")
   const [selectedBundles, setSelectedBundles] = useState<string[]>([]);
@@ -255,6 +256,12 @@ export function LabOrderModal() {
     addMessage({
       role: "system",
       content: message,
+    });
+
+    // Track player action
+    addPlayerAction("lab_order", `開立檢驗: ${orderedNames.join(", ")}`, {
+      bundles: selectedBundles,
+      items: selectedItems,
     });
 
     setSelectedBundles([]);

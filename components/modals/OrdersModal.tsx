@@ -195,6 +195,7 @@ export function OrdersModal() {
   const addOrderedMedication = useGameStore((state) => state.addOrderedMedication);
   const orderedMedications = useGameStore((state) => state.orderedMedications);
   const addMessage = useGameStore((state) => state.addMessage);
+  const addPlayerAction = useGameStore((state) => state.addPlayerAction);
 
   const [selectedCategory, setSelectedCategory] = useState<string | null>(null);
   const [pendingOrders, setPendingOrders] = useState<PendingOrder[]>([]);
@@ -281,6 +282,21 @@ export function OrdersModal() {
       role: "system",
       content: `【醫囑開立】\n${orderSummary}`,
     });
+
+    // Track player action
+    addPlayerAction(
+      "medication",
+      `開立醫囑: ${pendingOrders.map((o) => o.medication.name).join(", ")}`,
+      {
+        orders: pendingOrders.map((o) => ({
+          name: o.medication.name,
+          dose: o.dose,
+          unit: o.medication.defaultUnit,
+          frequency: o.frequency,
+          warning: o.warning,
+        })),
+      }
+    );
 
     setPendingOrders([]);
     setSelectedCategory(null);

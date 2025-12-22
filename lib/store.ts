@@ -11,12 +11,15 @@ import type {
   ModalType,
   HandoffReport,
   HandoffFeedback,
+  PlayerAction,
+  PlayerActionType,
 } from "./types";
 
 interface GameStore {
   // Scenario
   scenario: Scenario | null;
   isLoading: boolean;
+  loadError: string | null;
 
   // Current state
   vitals: VitalSigns | null;
@@ -28,6 +31,9 @@ interface GameStore {
   orderedMedications: OrderedMedication[];
   examinedItems: ExaminedItem[];
   pocusExamined: POCUSExamined[];
+
+  // Player action tracking
+  playerActions: PlayerAction[];
 
   // Game progress
   gameStarted: boolean;
@@ -44,6 +50,7 @@ interface GameStore {
   // Actions
   setScenario: (scenario: Scenario) => void;
   setLoading: (loading: boolean) => void;
+  setLoadError: (error: string | null) => void;
   setVitals: (vitals: VitalSigns) => void;
   setStatus: (status: CurrentStatus) => void;
 
@@ -53,6 +60,9 @@ interface GameStore {
   addOrderedMedication: (med: Omit<OrderedMedication, "id" | "orderedAt">) => void;
   addExaminedItem: (item: Omit<ExaminedItem, "examinedAt">) => void;
   addPOCUSExamined: (pocus: Omit<POCUSExamined, "examinedAt">) => void;
+
+  // Player action tracking
+  addPlayerAction: (type: PlayerActionType, detail: string, data?: Record<string, unknown>) => void;
 
   startGame: () => void;
   endGame: (diagnosis: string) => void;
@@ -68,6 +78,7 @@ interface GameStore {
 const initialState = {
   scenario: null,
   isLoading: false,
+  loadError: null as string | null,
   vitals: null,
   status: null,
   messages: [],
@@ -75,6 +86,7 @@ const initialState = {
   orderedMedications: [],
   examinedItems: [],
   pocusExamined: [],
+  playerActions: [] as PlayerAction[],
   gameStarted: false,
   gameEnded: false,
   submittedDiagnosis: null,
@@ -94,6 +106,8 @@ export const useGameStore = create<GameStore>((set, get) => ({
     }),
 
   setLoading: (isLoading) => set({ isLoading }),
+
+  setLoadError: (loadError) => set({ loadError }),
 
   setVitals: (vitals) => set({ vitals }),
 
@@ -164,8 +178,22 @@ export const useGameStore = create<GameStore>((set, get) => ({
       ],
     })),
 
+  addPlayerAction: (type, detail, data) =>
+    set((state) => ({
+      playerActions: [
+        ...state.playerActions,
+        {
+          id: crypto.randomUUID(),
+          type,
+          timestamp: new Date(),
+          detail,
+          data,
+        },
+      ],
+    })),
+
   startGame: () => {
-    const { scenario } = get();
+    const { scenario, addPlayerAction } = get();
     if (scenario) {
       set({
         gameStarted: true,
@@ -177,15 +205,36 @@ export const useGameStore = create<GameStore>((set, get) => ({
             timestamp: new Date(),
           },
         ],
+        playerActions: [
+          {
+            id: crypto.randomUUID(),
+            type: "game_start",
+            timestamp: new Date(),
+            detail: `開始情境: ${scenario.title}`,
+            data: { scenarioId: scenario.id },
+          },
+        ],
       });
     }
   },
 
-  endGame: (diagnosis) =>
-    set({
+  endGame: (diagnosis) => {
+    const { addPlayerAction } = get();
+    set((state) => ({
       gameEnded: true,
       submittedDiagnosis: diagnosis,
-    }),
+      playerActions: [
+        ...state.playerActions,
+        {
+          id: crypto.randomUUID(),
+          type: "game_end",
+          timestamp: new Date(),
+          detail: `提交診斷: ${diagnosis}`,
+          data: { diagnosis },
+        },
+      ],
+    }));
+  },
 
   resetGame: () => set(initialState),
 
