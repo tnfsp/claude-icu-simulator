@@ -118,7 +118,7 @@ export function StandardDebrief() {
                     </div>
                   </div>
                   <div className="text-right">
-                    <div className="text-4xl font-bold">{Math.max(0, standardScore)}</div>
+                    <div className="text-4xl font-bold">{standardScore}</div>
                     <div className="text-sm text-muted-foreground">/ {maxScore} 分</div>
                   </div>
                 </div>

@@ -150,7 +150,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     })),
 
   addStandardScore: (points) =>
-    set((state) => ({ standardScore: state.standardScore + points })),
+    set((state) => ({ standardScore: Math.max(0, state.standardScore + points) })),
 
   addCompletedScoringAction: (actionId) =>
     set((state) => ({

@@ -20,18 +20,24 @@ const colorClasses = {
     text: "text-green-700 dark:text-green-400",
     border: "border-green-200 dark:border-green-800",
     dot: "bg-green-500",
+    badge: "✓ 正常",
+    badgeStyle: "text-green-700 dark:text-green-400 text-xs font-medium",
   },
   yellow: {
     bg: "bg-yellow-50 dark:bg-yellow-950/30",
     text: "text-yellow-700 dark:text-yellow-400",
     border: "border-yellow-200 dark:border-yellow-800",
     dot: "bg-yellow-500",
+    badge: "⚠ 注意",
+    badgeStyle: "text-yellow-700 dark:text-yellow-400 text-xs font-medium",
   },
   red: {
     bg: "bg-red-50 dark:bg-red-950/30",
     text: "text-red-700 dark:text-red-400",
     border: "border-red-200 dark:border-red-800",
     dot: "bg-red-500 animate-pulse",
+    badge: "⚠️ 危險",
+    badgeStyle: "text-red-700 dark:text-red-400 text-xs font-bold",
   },
 };
 
@@ -120,13 +126,18 @@ export function ColorVitalsPanel() {
                 <item.icon className={`h-4 w-4 ${item.iconColor}`} />
                 <span className="text-sm font-medium">{item.label}</span>
               </div>
-              <div className="text-right">
-                <span className={`text-lg font-bold ${classes.text}`}>
-                  {item.displayValue ?? item.value}
+              <div className="flex items-center gap-2">
+                <span className={classes.badgeStyle}>
+                  {classes.badge}
                 </span>
-                <span className="text-xs text-muted-foreground ml-1">
-                  {item.unit}
-                </span>
+                <div className="text-right">
+                  <span className={`text-lg font-bold ${classes.text}`}>
+                    {item.displayValue ?? item.value}
+                  </span>
+                  <span className="text-xs text-muted-foreground ml-1">
+                    {item.unit}
+                  </span>
+                </div>
               </div>
             </div>
           );

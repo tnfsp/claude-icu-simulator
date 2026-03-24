@@ -14,6 +14,8 @@ export function MiniVitalsBar({ useColorVitals = false }: MiniVitalsBarProps) {
   const vitals = useGameStore((state) => state.vitals);
   const [expanded, setExpanded] = useState(false);
 
+  const standardOverlay = useGameStore((state) => state.standardOverlay);
+
   if (!vitals) {
     return (
       <div className="bg-card border-b px-3 py-2 text-sm text-muted-foreground">
@@ -22,31 +24,43 @@ export function MiniVitalsBar({ useColorVitals = false }: MiniVitalsBarProps) {
     );
   }
 
+  const ranges = standardOverlay?.vitalRanges;
+
+  // If Standard mode ranges exist, value outside green range is abnormal.
+  // Otherwise fall back to hardcoded defaults.
+  const isOutsideGreen = (value: number, key: keyof NonNullable<typeof ranges>) => {
+    if (ranges) {
+      const [lo, hi] = ranges[key].green;
+      return value < lo || value > hi;
+    }
+    return undefined; // signal to use fallback
+  };
+
   const items = [
     {
       label: "HR",
       value: String(vitals.hr),
-      isAbnormal: vitals.hr > 100 || vitals.hr < 60,
+      isAbnormal: isOutsideGreen(vitals.hr, "hr") ?? (vitals.hr > 100 || vitals.hr < 60),
     },
     {
       label: "BP",
       value: `${vitals.bp_systolic}/${vitals.bp_diastolic}`,
-      isAbnormal: vitals.bp_systolic < 90 || vitals.bp_systolic > 140,
+      isAbnormal: isOutsideGreen(vitals.bp_systolic, "bp_systolic") ?? (vitals.bp_systolic < 90 || vitals.bp_systolic > 140),
     },
     {
       label: "SpO2",
       value: `${vitals.spo2}%`,
-      isAbnormal: vitals.spo2 < 94,
+      isAbnormal: isOutsideGreen(vitals.spo2, "spo2") ?? (vitals.spo2 < 94),
     },
     {
       label: "RR",
       value: String(vitals.rr),
-      isAbnormal: vitals.rr > 20 || vitals.rr < 12,
+      isAbnormal: isOutsideGreen(vitals.rr, "rr") ?? (vitals.rr > 20 || vitals.rr < 12),
     },
     {
       label: "T",
       value: `${vitals.temperature.toFixed(1)}°`,
-      isAbnormal: vitals.temperature > 38 || vitals.temperature < 36,
+      isAbnormal: isOutsideGreen(vitals.temperature, "temperature") ?? (vitals.temperature > 38 || vitals.temperature < 36),
     },
   ];
 

@@ -97,6 +97,31 @@ export function GuidanceEngine() {
               );
               if (gaveFluids) shouldFire = true;
             }
+            if (trigger.condition.action === "sepsis_panel") {
+              const orderedSepsis = orderedMedications.some(
+                (m) => {
+                  const name = m.name.toLowerCase();
+                  return (
+                    name.includes("sepsis") ||
+                    name.includes("blood culture") ||
+                    name.includes("lactate") ||
+                    name.includes("procalcitonin")
+                  );
+                }
+              );
+              // Also check playerActions for ordering the sepsis panel bundle
+              const orderedSepsisBundle = playerActions.some(
+                (a) => {
+                  const desc = (a.type + " " + (a.detail || "")).toLowerCase();
+                  return (
+                    desc.includes("sepsis") ||
+                    desc.includes("blood culture") ||
+                    desc.includes("lactate")
+                  );
+                }
+              );
+              if (orderedSepsis || orderedSepsisBundle) shouldFire = true;
+            }
             break;
           }
 

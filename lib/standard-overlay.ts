@@ -52,6 +52,13 @@ export const cardiogenicShockStandardOverlay: StandardOverlay = {
       priority: "urgent",
     },
     {
+      id: "sepsis_panel_ordered",
+      condition: { type: "wrong_action", action: "sepsis_panel" },
+      delaySeconds: 0,
+      hint: "PCT 才 0.3，看起來不太像 sepsis 耶⋯先處理心臟的問題？",
+      priority: "gentle" as const,
+    },
+    {
       id: "hint-missed-pe",
       condition: { type: "missed_action", action: "physical_exam", bySeconds: 90 },
       delaySeconds: 0,
@@ -110,6 +117,9 @@ export const cardiogenicShockStandardOverlay: StandardOverlay = {
   ],
 
   vitalRanges: {
+    // HR: No yellow zone for bradycardia — in cardiogenic shock,
+    // HR < 60 is a late ominous sign that warrants immediate red alert.
+    // Yellow only covers mild tachycardia (100-120).
     hr: { green: [60, 100], yellow: [100, 120], red: [120, 999] },
     bp_systolic: { green: [90, 140], yellow: [70, 90], red: [0, 70] },
     rr: { green: [12, 20], yellow: [20, 28], red: [28, 999] },

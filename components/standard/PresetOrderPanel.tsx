@@ -34,7 +34,6 @@ export function PresetOrderPanel() {
   const addNurseHint = useGameStore((state) => state.addNurseHint);
 
   const [selectedMed, setSelectedMed] = useState<MedicationPreset | null>(null);
-  const [orderedIds, setOrderedIds] = useState<Set<string>>(new Set());
 
   const isOpen = activeModal === "orders";
 
@@ -43,15 +42,12 @@ export function PresetOrderPanel() {
   const presets = standardOverlay.medicationPresets;
 
   const handleSelectMed = (med: MedicationPreset) => {
-    if (orderedIds.has(med.id)) return;
+    if (orderedMedications.some((m) => m.name === med.name)) return;
     setSelectedMed(med);
   };
 
   const handleConfirmOrder = () => {
     if (!selectedMed) return;
-
-    // Mark as ordered
-    setOrderedIds((prev) => new Set(prev).add(selectedMed.id));
 
     // Add to store
     addOrderedMedication({
@@ -125,17 +121,6 @@ export function PresetOrderPanel() {
     setActiveModal(null);
   };
 
-  const getCategoryBadge = (category: MedicationPreset["category"]) => {
-    switch (category) {
-      case "correct":
-        return null; // Don't spoil it
-      case "harmful":
-        return null;
-      case "neutral":
-        return null;
-    }
-  };
-
   const getCategoryIcon = (category: MedicationPreset["category"], ordered: boolean) => {
     if (!ordered) return null;
     switch (category) {
@@ -164,8 +149,7 @@ export function PresetOrderPanel() {
           </p>
 
           {presets.map((med) => {
-            const isOrdered = orderedIds.has(med.id) ||
-              orderedMedications.some((m) => m.name === med.name);
+            const isOrdered = orderedMedications.some((m) => m.name === med.name);
             const isSelected = selectedMed?.id === med.id;
 
             return (
