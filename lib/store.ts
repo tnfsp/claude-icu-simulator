@@ -97,7 +97,7 @@ interface GameStore {
 }
 
 const initialState = {
-  difficulty: null as DifficultyLevel | null,
+  difficulty: null as DifficultyLevel,
   standardOverlay: null as StandardOverlay | null,
   nurseHints: [] as NurseHint[],
   standardScore: 0,

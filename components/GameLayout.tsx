@@ -104,9 +104,7 @@ export function GameLayout() {
 
   const handleBackToDifficulty = () => {
     resetGame();
-    setDifficulty(null as unknown as "standard" | "pro");
-    // Force full reset including difficulty
-    useGameStore.setState({ difficulty: null });
+    setDifficulty(null);
   };
 
   return (

@@ -2,7 +2,7 @@
 // Difficulty System Types
 // ============================================
 
-export type DifficultyLevel = 'standard' | 'pro';
+export type DifficultyLevel = 'standard' | 'pro' | null;
 
 export interface NurseHintTrigger {
   id: string;
