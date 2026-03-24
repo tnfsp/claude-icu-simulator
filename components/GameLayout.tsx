@@ -11,18 +11,30 @@ import {
   LabOrderModal,
   LabResultsModal,
   POCUSModal,
+  CXRModal,
   OrdersModal,
   HandoffModal,
   DebriefModal,
 } from "@/components/modals";
+import { DifficultySelect } from "@/components/DifficultySelect";
+import {
+  ColorVitalsPanel,
+  GuidanceEngine,
+  PresetOrderPanel,
+  RescueCountdown,
+  StandardDebrief,
+} from "@/components/standard";
 import { useGameStore } from "@/lib/store";
-import { Play, RotateCcw, Loader2, AlertCircle } from "lucide-react";
+import { getStandardOverlay } from "@/lib/standard-overlay";
+import { MiniVitalsBar } from "@/components/ui/MiniVitalsBar";
+import { Play, RotateCcw, Loader2, AlertCircle, ArrowLeft } from "lucide-react";
 import type { Scenario } from "@/lib/types";
 
 // Default scenario ID to load
 const DEFAULT_SCENARIO_ID = "cardiogenic-shock-01";
 
 export function GameLayout() {
+  const difficulty = useGameStore((state) => state.difficulty);
   const scenario = useGameStore((state) => state.scenario);
   const isLoading = useGameStore((state) => state.isLoading);
   const loadError = useGameStore((state) => state.loadError);
@@ -33,6 +45,10 @@ export function GameLayout() {
   const setLoadError = useGameStore((state) => state.setLoadError);
   const startGame = useGameStore((state) => state.startGame);
   const resetGame = useGameStore((state) => state.resetGame);
+  const setDifficulty = useGameStore((state) => state.setDifficulty);
+  const setStandardOverlay = useGameStore((state) => state.setStandardOverlay);
+
+  const isStandard = difficulty === "standard";
 
   // Load scenario from API
   const loadScenario = useCallback(async (scenarioId: string) => {
@@ -49,18 +65,33 @@ export function GameLayout() {
 
       const scenarioData: Scenario = await response.json();
       setScenario(scenarioData);
+
+      // Load standard overlay if in standard mode
+      if (difficulty === "standard") {
+        const overlay = getStandardOverlay(scenarioId);
+        if (overlay) {
+          setStandardOverlay(overlay);
+        }
+      }
     } catch (error) {
       console.error("Error loading scenario:", error);
       setLoadError(error instanceof Error ? error.message : "Failed to load scenario");
     } finally {
       setLoading(false);
     }
-  }, [setScenario, setLoading, setLoadError]);
+  }, [setScenario, setLoading, setLoadError, difficulty, setStandardOverlay]);
 
-  // Load default scenario on mount
+  // Load scenario when difficulty is selected
   useEffect(() => {
-    loadScenario(DEFAULT_SCENARIO_ID);
-  }, [loadScenario]);
+    if (difficulty && !scenario) {
+      loadScenario(DEFAULT_SCENARIO_ID);
+    }
+  }, [difficulty, scenario, loadScenario]);
+
+  // If no difficulty selected, show difficulty select screen
+  if (!difficulty) {
+    return <DifficultySelect />;
+  }
 
   const handleStartGame = () => {
     startGame();
@@ -71,17 +102,41 @@ export function GameLayout() {
     loadScenario(DEFAULT_SCENARIO_ID);
   };
 
+  const handleBackToDifficulty = () => {
+    resetGame();
+    setDifficulty(null as unknown as "standard" | "pro");
+    // Force full reset including difficulty
+    useGameStore.setState({ difficulty: null });
+  };
+
   return (
     <div className="min-h-screen bg-background flex flex-col">
       {/* Header */}
       <header className="border-b bg-card px-3 md:px-4 py-2 md:py-3 flex items-center justify-between flex-shrink-0">
         <div className="flex items-center gap-2 md:gap-4 min-w-0">
+          <Button
+            variant="ghost"
+            size="icon"
+            className="h-8 w-8"
+            onClick={handleBackToDifficulty}
+            title="返回選擇難度"
+          >
+            <ArrowLeft className="h-4 w-4" />
+          </Button>
           <h1 className="text-lg md:text-xl font-bold whitespace-nowrap">ICU Simulator</h1>
           {scenario && (
             <span className="text-xs md:text-sm text-muted-foreground bg-muted px-2 py-1 rounded truncate max-w-[150px] md:max-w-none hidden sm:inline-block">
               {scenario.title}
             </span>
           )}
+          {/* Difficulty badge */}
+          <span className={`text-xs px-2 py-0.5 rounded-full font-medium ${
+            isStandard
+              ? "bg-blue-100 text-blue-700 dark:bg-blue-900 dark:text-blue-300"
+              : "bg-purple-100 text-purple-700 dark:bg-purple-900 dark:text-purple-300"
+          }`}>
+            {isStandard ? "Standard" : "Pro"}
+          </span>
         </div>
         <div className="flex items-center gap-2 flex-shrink-0">
           {!gameStarted && !isLoading && scenario && (
@@ -121,16 +176,24 @@ export function GameLayout() {
           <>
             {/* Left Panel - Vitals & Status (hidden on small screens) */}
             <aside className="hidden md:flex w-56 lg:w-64 xl:w-72 border-r p-3 lg:p-4 flex-col gap-3 lg:gap-4 overflow-y-auto flex-shrink-0">
-              <VitalSignsPanel />
+              {isStandard ? <ColorVitalsPanel /> : <VitalSignsPanel />}
               <StatusPanel />
+              {/* Standard mode: Rescue countdown in sidebar */}
+              {isStandard && gameStarted && !gameEnded && <RescueCountdown />}
             </aside>
 
             {/* Right Panel - Chat & Actions */}
             <div className="flex-1 flex flex-col min-w-0 p-3 md:p-4 gap-3 md:gap-4">
-              {/* Mobile Vitals Summary */}
-              <div className="md:hidden">
-                <VitalSignsPanel />
+              {/* Mobile Vitals — compact sticky bar */}
+              <div className="md:hidden sticky top-0 z-10">
+                <MiniVitalsBar useColorVitals={isStandard} />
               </div>
+              {/* Mobile Rescue Countdown */}
+              {isStandard && gameStarted && !gameEnded && (
+                <div className="md:hidden">
+                  <RescueCountdown />
+                </div>
+              )}
               <ChatArea />
               <ActionPanel />
             </div>
@@ -138,14 +201,18 @@ export function GameLayout() {
         )}
       </main>
 
-      {/* Modals */}
+      {/* Standard Mode: GuidanceEngine (invisible, runs hints logic) */}
+      {isStandard && <GuidanceEngine />}
+
+      {/* Modals — Standard mode uses PresetOrderPanel + StandardDebrief instead */}
       <PhysicalExamModal />
       <LabOrderModal />
       <LabResultsModal />
       <POCUSModal />
-      <OrdersModal />
+      <CXRModal />
+      {isStandard ? <PresetOrderPanel /> : <OrdersModal />}
       <HandoffModal />
-      <DebriefModal />
+      {isStandard ? <StandardDebrief /> : <DebriefModal />}
     </div>
   );
 }

@@ -180,18 +180,20 @@ export function POCUSModal() {
                       </div>
                     </div>
 
-                    {/* Placeholder for video/image */}
                     {examined && hasAsset && (
-                      <div className="mt-3 aspect-video bg-muted rounded-lg flex items-center justify-center">
-                        <div className="text-center text-muted-foreground">
-                          <Monitor className="h-12 w-12 mx-auto mb-2 opacity-50" />
-                          <div className="text-sm">
-                            影像/影片素材待上傳
-                          </div>
-                          <div className="text-xs">
-                            {scenario?.pocus_findings[view.id]?.video ||
-                              scenario?.pocus_findings[view.id]?.image}
-                          </div>
+                      <div className="mt-3">
+                        <div className="aspect-video bg-black rounded-lg overflow-hidden">
+                          <video
+                            src={scenario?.pocus_findings[view.id]?.video}
+                            autoPlay
+                            loop
+                            muted
+                            playsInline
+                            className="w-full h-full object-contain"
+                          />
+                        </div>
+                        <div className="mt-1 text-xs text-muted-foreground text-center">
+                          Source: LITFL | Dr James Rippey | CC-BY-NC-SA 4.0
                         </div>
                       </div>
                     )}

@@ -1,4 +1,80 @@
 // ============================================
+// Difficulty System Types
+// ============================================
+
+export type DifficultyLevel = 'standard' | 'pro';
+
+export interface NurseHintTrigger {
+  id: string;
+  condition: HintCondition;
+  delaySeconds: number;
+  hint: string;
+  priority: 'gentle' | 'urgent';
+}
+
+export type HintCondition =
+  | { type: 'no_action_for'; seconds: number }
+  | { type: 'wrong_action'; action: string }
+  | { type: 'missed_action'; action: string; bySeconds: number }
+  | { type: 'vitals_critical'; vital: keyof VitalSigns }
+  | { type: 'phase_start'; phase: string }
+  | { type: 'game_start' }
+  | { type: 'no_pocus_after'; seconds: number };
+
+export interface MedicationPreset {
+  id: string;
+  name: string;
+  category: 'correct' | 'neutral' | 'harmful';
+  display: string;
+  explanation?: string;
+  triggersTransition?: string;
+}
+
+export interface VitalColorRanges {
+  hr: { green: [number, number]; yellow: [number, number]; red: [number, number] };
+  bp_systolic: { green: [number, number]; yellow: [number, number]; red: [number, number] };
+  rr: { green: [number, number]; yellow: [number, number]; red: [number, number] };
+  spo2: { green: [number, number]; yellow: [number, number]; red: [number, number] };
+  temperature: { green: [number, number]; yellow: [number, number]; red: [number, number] };
+}
+
+export interface StandardOverlay {
+  scenarioId: string;
+  nurseHintTriggers: NurseHintTrigger[];
+  medicationPresets: MedicationPreset[];
+  vitalRanges: VitalColorRanges;
+  presetOrderBundles: PresetOrderBundle[];
+  scoring: {
+    keyActions: ScoringAction[];
+    maxScore: number;
+  };
+}
+
+export interface PresetOrderBundle {
+  id: string;
+  label: string;
+  description: string;
+  items: string[];
+}
+
+export interface ScoringAction {
+  id: string;
+  action: string;
+  points: number;
+  required: boolean;
+  description: string;
+}
+
+export interface NurseHint {
+  id: string;
+  triggerId: string;
+  text: string;
+  priority: 'gentle' | 'urgent';
+  timestamp: Date;
+  dismissed: boolean;
+}
+
+// ============================================
 // Scenario Types
 // ============================================
 
@@ -16,6 +92,7 @@ export interface Scenario {
   physical_exam: PhysicalExam;
   lab_results: LabResults;
   pocus_findings: POCUSFindings;
+  cxr_findings?: CXRFindings;
   diagnosis: Diagnosis;
   optimal_management: OptimalManagement;
   learning_points: string[];
@@ -194,6 +271,18 @@ export interface POCUSView {
 }
 
 // ============================================
+// CXR Types
+// ============================================
+
+export interface CXRFindings {
+  image?: string;
+  finding: string;
+  findings_list?: string[];
+  source?: string;
+  license?: string;
+}
+
+// ============================================
 // Diagnosis & Management Types
 // ============================================
 
@@ -283,6 +372,7 @@ export type PlayerActionType =
   | "lab_order"      // 開立檢驗
   | "lab_view"       // 查看報告
   | "pocus"          // 床邊超音波
+  | "cxr"            // 胸部X光
   | "medication"     // 開立醫囑
   | "handoff"        // 交班報告
   | "game_start"     // 遊戲開始
@@ -376,6 +466,7 @@ export type ModalType =
   | "lab-order"
   | "lab-results"
   | "pocus"
+  | "cxr"
   | "orders"
   | "handoff"
   | "debrief"

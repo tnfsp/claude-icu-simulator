@@ -13,9 +13,30 @@ import type {
   HandoffFeedback,
   PlayerAction,
   PlayerActionType,
+  DifficultyLevel,
+  NurseHint,
+  StandardOverlay,
 } from "./types";
 
 interface GameStore {
+  // Difficulty
+  difficulty: DifficultyLevel | null;
+  setDifficulty: (level: DifficultyLevel) => void;
+
+  // Standard mode state
+  standardOverlay: StandardOverlay | null;
+  setStandardOverlay: (overlay: StandardOverlay) => void;
+  nurseHints: NurseHint[];
+  addNurseHint: (hint: Omit<NurseHint, "id" | "timestamp">) => void;
+  dismissHint: (hintId: string) => void;
+  standardScore: number;
+  addStandardScore: (points: number) => void;
+  completedScoringActions: string[];
+  addCompletedScoringAction: (actionId: string) => void;
+  rescueTimeRemaining: number | null;
+  setRescueTimeRemaining: (time: number | null) => void;
+  gameStartedAt: number | null;
+
   // Scenario
   scenario: Scenario | null;
   isLoading: boolean;
@@ -76,6 +97,13 @@ interface GameStore {
 }
 
 const initialState = {
+  difficulty: null as DifficultyLevel | null,
+  standardOverlay: null as StandardOverlay | null,
+  nurseHints: [] as NurseHint[],
+  standardScore: 0,
+  completedScoringActions: [] as string[],
+  rescueTimeRemaining: null as number | null,
+  gameStartedAt: null as number | null,
   scenario: null,
   isLoading: false,
   loadError: null as string | null,
@@ -97,6 +125,39 @@ const initialState = {
 
 export const useGameStore = create<GameStore>((set, get) => ({
   ...initialState,
+
+  setDifficulty: (difficulty) => set({ difficulty }),
+
+  setStandardOverlay: (standardOverlay) => set({ standardOverlay }),
+
+  addNurseHint: (hint) =>
+    set((state) => ({
+      nurseHints: [
+        ...state.nurseHints,
+        {
+          ...hint,
+          id: crypto.randomUUID(),
+          timestamp: new Date(),
+        },
+      ],
+    })),
+
+  dismissHint: (hintId) =>
+    set((state) => ({
+      nurseHints: state.nurseHints.map((h) =>
+        h.id === hintId ? { ...h, dismissed: true } : h
+      ),
+    })),
+
+  addStandardScore: (points) =>
+    set((state) => ({ standardScore: state.standardScore + points })),
+
+  addCompletedScoringAction: (actionId) =>
+    set((state) => ({
+      completedScoringActions: [...state.completedScoringActions, actionId],
+    })),
+
+  setRescueTimeRemaining: (time) => set({ rescueTimeRemaining: time }),
 
   setScenario: (scenario) =>
     set({
@@ -193,10 +254,11 @@ export const useGameStore = create<GameStore>((set, get) => ({
     })),
 
   startGame: () => {
-    const { scenario, addPlayerAction } = get();
+    const { scenario } = get();
     if (scenario) {
       set({
         gameStarted: true,
+        gameStartedAt: Date.now(),
         messages: [
           {
             id: crypto.randomUUID(),
@@ -236,7 +298,7 @@ export const useGameStore = create<GameStore>((set, get) => ({
     }));
   },
 
-  resetGame: () => set(initialState),
+  resetGame: () => set({ ...initialState, difficulty: get().difficulty }),
 
   setHandoffReport: (handoffReport) => set({ handoffReport }),
 

@@ -10,6 +10,7 @@ import {
   Pill,
   FileCheck,
   ClipboardList,
+  Image as ImageIcon,
 } from "lucide-react";
 import type { ModalType } from "@/lib/types";
 
@@ -38,6 +39,12 @@ const actionButtons: ActionButton[] = [
     label: "POCUS",
     icon: Monitor,
     description: "Bedside Echo",
+  },
+  {
+    id: "cxr",
+    label: "CXR",
+    icon: ImageIcon,
+    description: "Chest X-Ray",
   },
   {
     id: "orders",
@@ -76,7 +83,7 @@ export function ActionPanel() {
   return (
     <Card className="w-full">
       <CardContent className="p-3 md:p-4">
-        <div className="grid grid-cols-3 md:grid-cols-6 gap-2">
+        <div className="grid grid-cols-4 md:grid-cols-7 gap-2">
           {actionButtons.map((action) => {
             const isDisabled =
               !gameStarted ||

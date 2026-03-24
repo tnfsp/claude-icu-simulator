@@ -123,7 +123,7 @@
     },
     "subcostal": {
       "video": "/assets/echo/cardiac-tamponade/subcostal.mp4",
-      "finding": "Pericardium appears normal, no significant effusion."
+      "finding": "Small pericardial effusion noted. No diastolic collapse of RV — not suggestive of tamponade. Poor LV contractility."
     },
     "ivc": {
       "video": "/assets/echo/cardiac-tamponade/ivc.mp4",
@@ -133,6 +133,20 @@
       "video": "/assets/echo/lung-b-lines/b-lines.mp4",
       "finding": "Multiple B-lines bilaterally (>3 per field) — pulmonary oedema."
     }
+  },
+  "cxr_findings": {
+    "image": "/assets/cxr/cardiogenic-shock/pulmonary-edema.png",
+    "finding": "Cardiomegaly with bilateral interstitial and alveolar pulmonary edema. Small bilateral pleural effusions. Cephalization of pulmonary vessels consistent with elevated left atrial pressure.",
+    "findings_list": [
+      "Cardiomegaly (CTR > 0.5)",
+      "Bilateral interstitial and alveolar pulmonary edema",
+      "Small bilateral pleural effusions",
+      "Cephalization of pulmonary vessels",
+      "No pneumothorax",
+      "No focal consolidation to suggest pneumonia"
+    ],
+    "source": "Wikimedia Commons — James Heilman, MD",
+    "license": "CC-BY-SA 3.0"
   },
   "diagnosis": {
     "primary": "Cardiogenic shock",
