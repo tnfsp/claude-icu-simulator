@@ -4,19 +4,16 @@
   "difficulty": "intermediate",
   "author": "ICU Simulator",
   "version": "1.0",
-
   "opening": {
     "caller": "護理師",
     "message": "醫師，床號 15 的病人看起來怪怪的，血壓有點低，你要不要來看一下？"
   },
-
   "patient": {
     "age": 68,
     "gender": "M",
     "bed": "15",
     "brief_history": "HTN, DM, 三天前 STEMI s/p primary PCI to LAD"
   },
-
   "initial_vitals": {
     "hr": 120,
     "bp_systolic": 78,
@@ -25,12 +22,10 @@
     "spo2": 94,
     "temperature": 37.2
   },
-
   "current_status": {
     "consciousness": "Alert but anxious",
     "appearance": "蒼白、冒汗、四肢冰冷"
   },
-
   "history_context": {
     "description": "病人三天前因 STEMI 接受 PCI，今天早上開始覺得喘，現在喘得更厲害了。",
     "key_points": [
@@ -40,7 +35,6 @@
       "從昨晚開始覺得喘，今天更喘"
     ]
   },
-
   "physical_exam": {
     "general": "看起來不舒服，端坐呼吸",
     "cardiac": {
@@ -60,7 +54,6 @@
       "temperature": "Cold"
     }
   },
-
   "lab_results": {
     "cbc": {
       "wbc": 9.8,
@@ -115,34 +108,32 @@
       "ua_sediment": "Few hyaline casts"
     }
   },
-
   "pocus_findings": {
     "plax": {
-      "video": "echo-plax.mp4",
-      "finding": "Severely reduced LV function, EF ~20%"
+      "video": "/assets/echo/takotsubo/plax.mp4",
+      "finding": "Severely reduced LV function, EF ~20%. Apical ballooning with basal hyperkinesis."
     },
     "psax": {
-      "video": "echo-psax.mp4",
-      "finding": "Global hypokinesis, D-shaped septum absent"
+      "video": "/assets/echo/takotsubo/psax-1.mp4",
+      "finding": "Global hypokinesis, regional wall motion abnormality. D-shaped septum absent."
     },
     "a4c": {
-      "video": "echo-a4c.mp4",
-      "finding": "Dilated LV, global hypokinesis"
+      "video": "/assets/echo/takotsubo/a4c.mp4",
+      "finding": "Dilated LV, global hypokinesis, apical akinesis."
     },
     "subcostal": {
-      "video": "echo-subcostal.mp4",
-      "finding": "Pericardium appears normal, no effusion"
+      "video": "/assets/echo/cardiac-tamponade/subcostal.mp4",
+      "finding": "Pericardium appears normal, no significant effusion."
     },
     "ivc": {
-      "video": "echo-ivc.mp4",
-      "finding": "Dilated IVC > 2.1cm, < 50% collapse"
+      "video": "/assets/echo/cardiac-tamponade/ivc.mp4",
+      "finding": "Dilated IVC > 2.1cm, < 50% collapse → estimated RAP 10-15 mmHg."
     },
     "lung": {
-      "image": "lung-us.jpg",
-      "finding": "Multiple B-lines bilaterally (>3 per field)"
+      "video": "/assets/echo/lung-b-lines/b-lines.mp4",
+      "finding": "Multiple B-lines bilaterally (>3 per field) — pulmonary oedema."
     }
   },
-
   "diagnosis": {
     "primary": "Cardiogenic shock",
     "differential": [
@@ -159,7 +150,6 @@
       "Recent STEMI history (3 days post-PCI)"
     ]
   },
-
   "optimal_management": {
     "avoid": [
       {
@@ -194,7 +184,6 @@
       }
     ]
   },
-
   "learning_points": [
     "Cardiogenic shock 可能因低灌流而有 elevated lactate，容易誤認為 sepsis",
     "Physical exam 的 JVP 和四肢溫度是重要鑑別點：cardiogenic = cold & wet, septic = warm & dry",
@@ -203,10 +192,12 @@
     "Post-MI cardiogenic shock 需要同時考慮 mechanical complications (VSD, papillary muscle rupture)",
     "Procalcitonin 正常或輕度升高 (<0.5) 較不支持 bacterial sepsis"
   ],
-
   "vital_transitions": [
     {
-      "trigger": { "medication": "NS", "volume_gt": 500 },
+      "trigger": {
+        "medication": "NS",
+        "volume_gt": 500
+      },
       "delay_seconds": 30,
       "effect": {
         "spo2_delta": -4,
@@ -216,7 +207,10 @@
       "nurse_message": "醫師！病人好像更喘了，SpO2 掉到 90%！"
     },
     {
-      "trigger": { "medication": "NS", "volume_gt": 1000 },
+      "trigger": {
+        "medication": "NS",
+        "volume_gt": 1000
+      },
       "delay_seconds": 60,
       "effect": {
         "spo2_delta": -8,
@@ -226,7 +220,9 @@
       "nurse_message": "醫師！病人喘得更厲害了，SpO2 掉下來了！呼吸很費力！"
     },
     {
-      "trigger": { "medication": "norepinephrine" },
+      "trigger": {
+        "medication": "norepinephrine"
+      },
       "delay_seconds": 60,
       "effect": {
         "bp_systolic_delta": 15,
@@ -235,7 +231,9 @@
       "nurse_message": "血壓有慢慢上來了，MAP 現在 68。"
     },
     {
-      "trigger": { "medication": "dobutamine" },
+      "trigger": {
+        "medication": "dobutamine"
+      },
       "delay_seconds": 120,
       "effect": {
         "hr_delta": 10,
@@ -245,7 +243,9 @@
       "nurse_message": "病人看起來比較好了，血壓穩定，尿量也開始有了。"
     },
     {
-      "trigger": { "medication": "furosemide" },
+      "trigger": {
+        "medication": "furosemide"
+      },
       "delay_seconds": 300,
       "effect": {
         "spo2_delta": 3,
@@ -254,7 +254,6 @@
       "nurse_message": "利尿劑打完了，病人尿量開始多了，呼吸有比較順。"
     }
   ],
-
   "deterioration_thresholds": {
     "trigger_acls": {
       "hr_lt": 40,
@@ -263,7 +262,6 @@
       "spo2_lt": 75
     }
   },
-
   "handoff_evaluation": {
     "required_mentions": [
       "68 歲男性",
